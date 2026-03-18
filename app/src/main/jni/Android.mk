@@ -13,4 +13,22 @@
 # limitations under the License.
 #
 
-include $(call all-subdir-makefiles)
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+
+LOCAL_MODULE    := byedpi
+
+
+LOCAL_SRC_FILES := \
+    byedpi.c \
+    desync.c \
+    util.c \
+    conns.c \
+    proxy.c
+
+LOCAL_CFLAGS += -O3 -Wall
+LOCAL_LDLIBS := -llog
+
+include $(BUILD_SHARED_LIBRARY)
