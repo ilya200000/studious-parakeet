@@ -2,23 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com"
     xmlns:tools="http://schemas.android.com">
 
-    <!-- Разрешения для интернета и уведомлений -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    
-    <!-- Разрешения для фоновых служб (Критично для Android 14+) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_VPN" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-    
-    <!-- Автозапуск и батарея -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    
-    <!-- Работа со списком приложений (если нужно для исключений) -->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:allowBackup="true"
@@ -43,8 +35,7 @@
             android:label="@string/title_settings"
             android:exported="false" />
 
-        <!-- Основной VPN сервис -->
-        <service 
+        <service
             android:name=".services.ByeDpiVpnService"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:foregroundServiceType="vpn"
@@ -54,13 +45,11 @@
             </intent-filter>
         </service>
 
-        <!-- Прокси сервис -->
-        <service 
+        <service
             android:name=".services.ByeDpiProxyService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
 
-        <!-- Ресивер автозапуска -->
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
