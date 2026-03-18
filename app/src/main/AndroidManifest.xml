@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com"
+    xmlns:tools="http://schemas.android.com">
 
+    <!-- Базовые разрешения -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
+    
+    <!-- Разрешения для фоновой работы (важно для Android 14+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_VPN" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+
+    <!-- Разрешения для работы с приложениями и памятью -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
-    <uses-feature android:name="android.software.leanback"
-        android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen"
-        android:required="false" />
+
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -40,7 +43,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
@@ -72,9 +74,10 @@
             android:label="@string/title_settings"
             android:exported="false"/>
 
+        <!-- Основной VPN сервис (Тип изменен на vpn) -->
         <service android:name=".services.ByeDpiVpnService"
             android:permission="android.permission.BIND_VPN_SERVICE"
-            android:foregroundServiceType="specialUse"
+            android:foregroundServiceType="vpn"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.net.VpnService"/>
@@ -82,17 +85,12 @@
             <meta-data
                 android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
                 android:value="false" />
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="vpn" />
         </service>
 
+        <!-- Прокси сервис (Тип изменен на dataSync для стабильности) -->
         <service android:name=".services.ByeDpiProxyService"
-            android:foregroundServiceType="specialUse"
+            android:foregroundServiceType="dataSync"
             android:exported="false">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="proxy" />
         </service>
 
         <service
@@ -105,16 +103,15 @@
                 android:name="android.service.quicksettings.TOGGLEABLE_TILE"
                 android:value="true" />
             <intent-filter>
-                <action
-                    android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
 
+        <!-- Исправленный ресивер автозапуска -->
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -123,5 +120,4 @@
             </intent-filter>
         </receiver>
     </application>
-
 </manifest>
