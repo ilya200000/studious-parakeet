@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com"
-    package="com.example.byedpi"
     xmlns:tools="http://schemas.android.com">
 
+    <!-- Разрешения для интернета и уведомлений -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- Разрешения для фоновых служб (Критично для Android 14+) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_VPN" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    
+    <!-- Автозапуск и батарея -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    
+    <!-- Работа со списком приложений (если нужно для исключений) -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:allowBackup="true"
@@ -36,7 +43,8 @@
             android:label="@string/title_settings"
             android:exported="false" />
 
-        <service
+        <!-- Основной VPN сервис -->
+        <service 
             android:name=".services.ByeDpiVpnService"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:foregroundServiceType="vpn"
@@ -46,17 +54,20 @@
             </intent-filter>
         </service>
 
-        <service
+        <!-- Прокси сервис -->
+        <service 
             android:name=".services.ByeDpiProxyService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
 
+        <!-- Ресивер автозапуска -->
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
